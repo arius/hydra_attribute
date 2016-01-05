@@ -13,9 +13,10 @@ end
 require 'hydra_attribute'
 
 ActiveSupport.on_load(:active_record) do
-  self.default_timezone          = :utc
-  self.mass_assignment_sanitizer = :strict
+  self.default_timezone = :utc
 end
+
+I18n.enforce_available_locales = true
 
 ENV['DB'] ||= 'sqlite'
 require File.expand_path("../environments/#{ENV['DB']}", __FILE__)

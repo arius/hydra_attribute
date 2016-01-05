@@ -90,7 +90,7 @@ module HydraAttribute
       # @param [HydraAttribute::HydraEntity] entity
       # @return [NilClass]
       def delete_entity_values(entity)
-        hydra_attributes = ::HydraAttribute::HydraAttribute.all_by_entity_type(entity.class.model_name)
+        hydra_attributes = ::HydraAttribute::HydraAttribute.all_by_entity_type(entity.class.name)
         hydra_attributes = hydra_attributes.group_by(&:backend_type)
         hydra_attributes.each do |backend_type, attributes|
           table = arel_tables[entity.class.table_name][backend_type]
@@ -281,12 +281,12 @@ module HydraAttribute
       def arel_update
         table = self.class.arel_tables[entity.class.table_name][hydra_attribute.backend_type]
         arel  = table.from(table)
+
         if column.sql_type == "polymorphic_association"
-          arel.where(table[:id].eq(id)).compile_update(table[:value_id] => value_id, table[:value_type] => value_type, table[:updated_at] => Time.now)
+          arel.where(table[:id].eq(id)).compile_update({table[:value_id] => value_id, table[:value_type] => value_type, table[:updated_at] => Time.now}, id)
         else
-          arel.where(table[:id].eq(id)).compile_update(table[:value] => value, table[:updated_at] => Time.now)
+          arel.where(table[:id].eq(id)).compile_update({table[:value] => value, table[:updated_at] => Time.now}, id)          
         end
-        
       end
 
       # Performs sql insert query

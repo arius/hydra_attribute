@@ -1,8 +1,7 @@
 require 'hydra_attribute/active_record/attribute_methods'
 require 'hydra_attribute/active_record/migration'
 require 'hydra_attribute/active_record/relation'
-require 'hydra_attribute/active_record/scoping'
-require 'hydra_attribute/active_record/mass_assignment_security'
+require 'hydra_attribute/active_record/associations'
 
 module HydraAttribute
   module ActiveRecord
@@ -19,9 +18,8 @@ module HydraAttribute
     end
 
     include ::HydraAttribute::HydraEntity
-    include ::HydraAttribute::ActiveRecord::Scoping
     include ::HydraAttribute::ActiveRecord::AttributeMethods
-    include ::HydraAttribute::ActiveRecord::MassAssignmentSecurity
+    include ::HydraAttribute::ActiveRecord::Associations
 
     module ClassMethods
       def inspect
@@ -34,6 +32,13 @@ module HydraAttribute
           super
         end
       end
+
+      private
+        def relation
+          relation = super
+          relation.singleton_class.send(:include, ::HydraAttribute::ActiveRecord::Relation)
+          relation
+        end
     end
 
     def inspect

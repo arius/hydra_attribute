@@ -73,7 +73,7 @@ module HydraAttribute
         #
         # @return [Array<ActiveRecord::ConnectionAdapters::Column>]
         def columns
-          @columns ||= connection.schema_cache.columns[table_name]
+          @columns ||= connection.schema_cache.columns(table_name)
         end
 
         # Returns hash of column objects with their names as a keys
@@ -81,7 +81,7 @@ module HydraAttribute
         #
         # @return [Hash]
         def columns_hash
-          @columns_hash ||= connection.schema_cache.columns_hash[table_name]
+          @columns_hash ||= connection.schema_cache.columns_hash(table_name)
         end
 
         # Returns hash of column objects with their names as a keys
@@ -237,7 +237,7 @@ module HydraAttribute
         # @return [Arel::UpdateManager]
         def compile_update(id, attributes = {})
           fields = attributes_to_columns(attributes)
-          compile_select(id: id).compile_update(fields)
+          compile_select(id: id).compile_update(fields, id)
         end
 
         # Compiles attributes for performing +DELETE+ query
