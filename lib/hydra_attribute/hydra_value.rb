@@ -39,18 +39,21 @@ module HydraAttribute
       @entity     = entity
       @attributes = attributes
       if column.sql_type == "enum"
-        if column.type_cast(attributes[:value]).nil?
+        if column.type_cast_for_database(attributes[:value]).nil?
           @value = nil
         else
           @value = attributes[:value].to_json
         end
       elsif attributes.has_key?(:value)
-        @value = column.type_cast(attributes[:value])
+        p column
+        p attributes[:value]
+        p "="*54
+        @value = attributes[:value]
       elsif attributes.has_key?(:value_id) && attributes.has_key?(:value_type)
-        @value_id = column.type_cast(attributes[:value_id])
-        @value_type = column.type_cast(attributes[:value_type])
+        @value_id = attributes[:value_id]
+        @value_type = attributes[:value_type]
       else
-        @value = column.type_cast(column.default)
+        @value = column.default
         attributes[:value] = column.default
       end
     end
@@ -160,7 +163,7 @@ module HydraAttribute
           Rails.logger.error("Value for #{self.hydra_attribute.name} must be an ActiveRecord::Base object but is #{new_value}")
         end
       else
-        @value = column.type_cast(new_value)
+        @value = column.type_cast_for_database(new_value)
       end
     end
     
@@ -176,7 +179,7 @@ module HydraAttribute
         @attributes[:value_id] = new_value   = nil
       else  
         @attributes[:value_id] = new_value  
-        @value_id = column.type_cast(new_value)
+        @value_id = column.type_cast_for_database(new_value)
       end
     end
     
@@ -188,7 +191,7 @@ module HydraAttribute
     def value_type=(new_value)
       value_will_change! unless value_type == new_value
       @attributes[:value_type] = new_value  
-      @value_type = column.type_cast(new_value)
+      @value_type = column.type_cast_for_database(new_value)
     end
     
 

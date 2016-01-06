@@ -400,7 +400,7 @@ module HydraAttribute
           if value.is_a?(Array) || value.is_a?(Hash)
             value.to_json
           else
-            self.class.symbolized_columns_hash[name].type_cast(value)
+            self.class.symbolized_columns_hash[name].type_cast_for_database(value)
           end
         end
 

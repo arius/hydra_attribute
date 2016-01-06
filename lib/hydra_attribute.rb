@@ -38,4 +38,4 @@ require 'hydra_attribute/active_record'
 
 require 'hydra_attribute/railtie' if defined?(Rails)
 
-YAML::ENGINE.yamler = 'syck'
+#YAML::ENGINE.yamler = 'syck'
